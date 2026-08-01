@@ -1,0 +1,96 @@
+{
+  "name": "iris-private-mcqa",
+  "version": "1",
+  "purpose": "InterSystems IRIS 实施运维私有题库，用来探测通用大模型在细分领域的精确知识边界",
+  "model_evaluated": "deepseek-chat",
+  "protocol": "zero-shot, 自研 runner, 直接比较 A/B/C/D（与 lm-eval-harness 无关）",
+  "result_summary": "5/8 = 62%",
+  "boundaries": [
+    "题目为作者自拟，知识点来自 InterSystems IRIS 官方文档；事实与 API 不受版权保护，题目表述为作者原创。",
+    "n=8，样本量过小，不能用于任何模型排名，只能展示「公开题拿满分、私有题露边界」这一现象。",
+    "「私有」是相对概念：题目由作者自建数据集改写，不保证模型训练时绝对未见相似内容。",
+    "gold 由作者判定，未经过独立领域专家复核；错题归因是观察性结论，非金标裁决。"
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "domain": "SQL 存储过程命名",
+      "q": "在 IRIS 中，如果一个类方法被定义为 SQL 存储过程（用 SqlProc 关键字标记），其默认的 SQL 过程名遵循什么规则？",
+      "choices": ["CLASSNAME_METHODNAME", "CLASSNAME.METHODNAME", "METHODNAME_ONLY", "PACKAGE.METHODNAME"],
+      "answer": "A",
+      "deepseek_pred": "B",
+      "correct": false,
+      "note": "模型选了 B（点号分隔，符合 Java/Python 包命名直觉），IRIS 实际用下划线拼类名与方法名。"
+    },
+    {
+      "id": 2,
+      "domain": "SQL 表名映射",
+      "q": "在 IRIS 中，User.Person 类在 SQL 中对应的全限定表名是？",
+      "choices": ["User.Person", "SQLUser.Person", "Person", "PUBLIC.Person"],
+      "answer": "B",
+      "deepseek_pred": "A",
+      "correct": false,
+      "note": "模型选了原样类名 A，IRIS 在 SQL 侧默认加 SQLUser. 前缀。模型缺 IRIS 特定的命名映射规则。"
+    },
+    {
+      "id": 3,
+      "domain": "类开发回调",
+      "q": "在 IRIS 中，%OnDeleteFinally() 回调方法在事务的哪个阶段被调用？",
+      "choices": ["事务开始之前", "事务回滚时", "事务完成之后，删除状态已确定时", "对象首次打开时"],
+      "answer": "C",
+      "deepseek_pred": "C",
+      "correct": true,
+      "note": "正确。"
+    },
+    {
+      "id": 4,
+      "domain": "并发控制",
+      "q": "在 IRIS 中，LOCK 命令如何释放（解锁）一个资源？",
+      "choices": ["使用 UNLOCK 命令", "使用 FREE 命令", "关闭当前进程自动解锁", "同一 LOCK 命令加 - 前缀，例如 LOCK -^MyGlobal"],
+      "answer": "D",
+      "deepseek_pred": "D",
+      "correct": true,
+      "note": "正确（IRIS 用 LOCK - 前缀递减锁计数）。"
+    },
+    {
+      "id": 5,
+      "domain": "调试系统函数",
+      "q": "在 IRIS 中，用于启用或禁用断点模式的系统函数是？",
+      "choices": ["$ZU(68,5)（也称 BreakMode()）", "$SYSTEM.Debug.Break()", "ZBREAK", "DEBUG.MODE()"],
+      "answer": "A",
+      "deepseek_pred": "B",
+      "correct": false,
+      "note": "模型选了 B（$SYSTEM.Debug.Break()，符合现代面向对象 API 直觉），IRIS 实际用 $ZU(68,5) 这类系统函数。模型对该领域底层 API 不熟。"
+    },
+    {
+      "id": 6,
+      "domain": "对象持久化",
+      "q": "在 IRIS 中，对于已持久化的对象，如何通过 OREF 获取其 ID？",
+      "choices": ["obj.OREF", "obj.%Id()", "$THIS", "obj.GetID()"],
+      "answer": "B",
+      "deepseek_pred": "B",
+      "correct": true,
+      "note": "正确。"
+    },
+    {
+      "id": 7,
+      "domain": "类方法语法",
+      "q": "在 IRIS 类方法定义中，[ Keywords ] 部分通常位于哪里？",
+      "choices": ["类名之前", "方法名之前", "方法名之后，代码块之前", "任意位置"],
+      "answer": "C",
+      "deepseek_pred": "C",
+      "correct": true,
+      "note": "正确。"
+    },
+    {
+      "id": 8,
+      "domain": "扩展全局引用",
+      "q": "在 IRIS 中，使用自动继承的扩展全局引用相比每次显式指定扩展引用，主要优势是？",
+      "choices": ["提高执行性能", "增强并发安全性", "自动事务回滚", "简化代码编写和维护"],
+      "answer": "D",
+      "deepseek_pred": "D",
+      "correct": true,
+      "note": "正确。"
+    }
+  ]
+}

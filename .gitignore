@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 本地评测结果（仓库只固化 data/ 下的官方副本，其他运行产物不纳入）
+results/
+local-results*/
+*.log
+
+# OS
+.DS_Store
+
+# 注意：data/*.jsonl 是复现依赖，必须提交，不要在这里忽略 *.jsonl
